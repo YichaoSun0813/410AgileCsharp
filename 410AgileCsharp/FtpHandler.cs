@@ -9,7 +9,10 @@ namespace _410AgileCsharp
 {
     class FtpHandler
     {
-        public bool logOn(FtpWebRequest userRequest) {
+        public FtpWebRequest mainRequest;
+        public FtpWebResponse mainResponse;
+
+        public bool logOn() {
             //Allows a user to log on to an FTP server with username and password. 
             //Prompts user for username, domain, and password
 
@@ -39,13 +42,15 @@ namespace _410AgileCsharp
             } while (key.Key != ConsoleKey.Enter);
             Console.WriteLine();
 
+            //maybe we could prompt for this? 
+            /*
             //Domain
             Console.Write("Enter Domain: ");
             string domain = Console.ReadLine();
-
+            */
             
             //Now, we feed all of these into a NetworkCredentials class, and feed that into our FtpWebRequest
-            userRequest.Credentials = new NetworkCredential(userName, securePwd, domain);
+            mainRequest.Credentials = new NetworkCredential(userName, securePwd);
 
             return true;
         }
