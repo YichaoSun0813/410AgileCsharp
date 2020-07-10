@@ -22,7 +22,7 @@ namespace _410AgileCsharp
             //Please don't transmit your username and password over the network in cleartext :)
             mainHandler.mainRequest.EnableSsl = true;
 
-            if (mainHandler.logOn())
+            if (mainHandler.LogOn())
             {
                 Console.WriteLine("logOn successfull");
             }

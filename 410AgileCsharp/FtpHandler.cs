@@ -13,7 +13,7 @@ namespace _410AgileCsharp
         public FtpWebRequest mainRequest;
         public FtpWebResponse mainResponse;
 
-        public bool logOn() {
+        public bool LogOn() {
             try
             {
                 //Allows a user to log on to an FTP server with username and password. 
