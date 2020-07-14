@@ -28,7 +28,7 @@ namespace _410AgileCsharp
                 //We need to use SecureStrings to be able to feed FtpWebRequest a password. It's probably much better that way!
                 SecureString securePwd = new SecureString();
                 ConsoleKeyInfo key;
-
+                
                 Console.Write("Enter password: ");
                 do
                 {
@@ -83,6 +83,23 @@ namespace _410AgileCsharp
                 return false;
             }
 
+        }
+
+        public bool LogOff()
+        {
+            //Logs user off of open FTP connection
+
+            try
+            {
+                mainResponse.Close();
+                Console.WriteLine("Connection Closed!");
+                return true;
+            }
+            catch(Exception OhJeeze)
+            {
+                Console.WriteLine(OhJeeze.Message.ToString());
+                return false;
+            }
         }
 
         

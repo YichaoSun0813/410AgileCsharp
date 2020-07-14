@@ -21,10 +21,15 @@ namespace _410AgileCsharp
             //HUGE: with EnableSsl = false, your username and password will be transmitted over the network in cleartext.
             //Please don't transmit your username and password over the network in cleartext :)
             mainHandler.mainRequest.EnableSsl = true;
+            //Allows mainRequest to make multiple requests. Otherwise, connection will close after one request.
+            mainHandler.mainRequest.KeepAlive = false;
 
             if (mainHandler.LogOn())
             {
                 Console.WriteLine("logOn successfull");
+                Console.WriteLine("Press enter to disconnect");
+                Console.ReadLine();
+                mainHandler.LogOff();
             }
             else
             {
