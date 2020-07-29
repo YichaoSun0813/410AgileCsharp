@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.IO;
+using _410AgileCsharp;
+
 namespace ListFilesOnRemoteServer
 {
     class RemoteLS
@@ -8,18 +10,17 @@ namespace ListFilesOnRemoteServer
         public FtpWebRequest lsRequest;
         public FtpWebResponse lsResponse;
 
-        public bool ListRemote()
+        public bool ListRemote(FtpHandler handler)
         {
             try
             {
-                lsRequest = (FtpWebRequest)WebRequest.Create("ftp://test.rebex.net/");
+                lsRequest = (FtpWebRequest)WebRequest.Create(handler.url);
                 lsRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-                lsRequest.Credentials = new NetworkCredential("demo", "password");
+                lsRequest.Credentials = new NetworkCredential(handler.savedUserName, handler.savedPassword);
                 lsResponse = (FtpWebResponse)lsRequest.GetResponse();
                 Stream responseStream = lsResponse.GetResponseStream();
                 StreamReader reader = new StreamReader(responseStream);
                 Console.WriteLine(reader.ReadToEnd());
-                Console.WriteLine("List complete");
                 reader.Close();
                 lsResponse.Close();
                 return true;
