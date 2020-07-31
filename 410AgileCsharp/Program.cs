@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ListFilesOnRemoteServer;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 
@@ -17,18 +18,30 @@ namespace _410AgileCsharp
             Console.Write("Enter an FTP server URL: ");
             string url = Console.ReadLine();
             mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url);
+            mainHandler.url = url;
+
 
             //HUGE: with EnableSsl = false, your username and password will be transmitted over the network in cleartext.
             //Please don't transmit your username and password over the network in cleartext :)
             mainHandler.mainRequest.EnableSsl = true;
             //Allows mainRequest to make multiple requests. Otherwise, connection will close after one request.
             mainHandler.mainRequest.KeepAlive = false;
+            var command = "l";
+            var request = mainHandler.LogOn();
+            var listRemote = new RemoteLS();
 
-            if (mainHandler.LogOn())
+            if (request != null)
             {
                 Console.WriteLine("logOn successfull");
-                Console.WriteLine("Press enter to disconnect");
-                Console.ReadLine();
+                while (command != "LogOff")
+                {
+                    Console.WriteLine("Enter a command");
+                    command = Console.ReadLine();
+                    if (command == "ls")
+                    {
+                        listRemote.ListRemote(mainHandler);
+                    }
+                }
                 mainHandler.LogOff();
             }
             else

@@ -12,8 +12,11 @@ namespace _410AgileCsharp
     {
         public FtpWebRequest mainRequest;
         public FtpWebResponse mainResponse;
+        public string url;
+        public string savedUserName;
+        public SecureString savedPassword;
 
-        public bool LogOn() {
+        public FtpWebRequest LogOn() {
             try
             {
                 //Allows a user to log on to an FTP server with username and password. 
@@ -22,6 +25,7 @@ namespace _410AgileCsharp
                 //Username
                 Console.Write("Enter username: ");
                 string userName = Console.ReadLine();
+                savedUserName = userName;
                 Console.WriteLine();
 
                 //Password stuff
@@ -44,6 +48,7 @@ namespace _410AgileCsharp
                     // Exit if Enter key is pressed.
                 } while (key.Key != ConsoleKey.Enter);
                 Console.WriteLine();
+                savedPassword = securePwd;
 
                 //maybe we could prompt for this? I'm not sure if it matters. Can be tacked on to the end of a NetworkCredential constructor.
                 /*
@@ -75,12 +80,12 @@ namespace _410AgileCsharp
                 mainResponse.Close();
 
 
-                return true;
+                return mainRequest;
             }
             catch(Exception OhNo)
             {
                 Console.WriteLine(OhNo.Message.ToString());
-                return false;
+                return null;
             }
 
         }
