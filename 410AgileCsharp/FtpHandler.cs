@@ -12,23 +12,61 @@ namespace _410AgileCsharp
     {
         public FtpWebRequest mainRequest;
         public FtpWebResponse mainResponse;
+        public string url;
+        public string currentUser;
+        public SecureString currentPass;
 
         public bool LogOn() {
+            Console.WriteLine("1) Log onto a server with url, username, and password, OR");
+            Console.WriteLine("2) Log onto a previously saved server");
+            for (; ; )
+            {
+                Console.Write(": ");
+                string userInput = Console.ReadLine();
+                switch (userInput) {
+                    case "1":
+                        return LogOnUnsaved();
+                    case "2":
+                        return LogOnSaved();
+                    default:
+                        Console.WriteLine("Unrecognized Input");
+                        break;
+                }
+            }
+        }
+
+        private bool LogOnUnsaved()
+        {
             try
             {
                 //Allows a user to log on to an FTP server with username and password. 
                 //Prompts user for username, domain, and password
 
+                //Prompt for FTP URL, and add into FtpWebRequest.
+                //Keep in mind that this needs to be a full URL, which should look something like this: ftp://HostName.com/
+                //This also initializes FtpWebRequest, which is kinda major. Maybe we should find a way to move this? 
+                //Maybe mainHandler constructor?
+                Console.Write("Enter an FTP server URL: ");
+                url = Console.ReadLine();
+                mainRequest = (FtpWebRequest)WebRequest.Create(url);
+
+                //HUGE: with EnableSsl = false, your username and password will be transmitted over the network in cleartext.
+                //Please don't transmit your username and password over the network in cleartext :)
+                mainRequest.EnableSsl = true;
+                //Allows mainRequest to make multiple requests. Otherwise, connection will close after one request.
+                mainRequest.KeepAlive = false;
+
+
                 //Username
                 Console.Write("Enter username: ");
-                string userName = Console.ReadLine();
+                currentUser = Console.ReadLine();
                 Console.WriteLine();
 
                 //Password stuff
                 //We need to use SecureStrings to be able to feed FtpWebRequest a password. It's probably much better that way!
-                SecureString securePwd = new SecureString();
+                currentPass = new SecureString();
                 ConsoleKeyInfo key;
-                
+
                 Console.Write("Enter password: ");
                 do
                 {
@@ -38,7 +76,7 @@ namespace _410AgileCsharp
                     if (((int)key.Key) >= 65 && ((int)key.Key <= 90))
                     {
                         // Append the character to the password.
-                        securePwd.AppendChar(key.KeyChar);
+                        currentPass.AppendChar(key.KeyChar);
                         Console.Write("*");
                     }
                     // Exit if Enter key is pressed.
@@ -53,7 +91,7 @@ namespace _410AgileCsharp
                 */
 
                 //Now, we feed all of these into a NetworkCredentials class, and feed that into our FtpWebRequest
-                mainRequest.Credentials = new NetworkCredential(userName, securePwd);
+                mainRequest.Credentials = new NetworkCredential(currentUser, currentPass);
 
                 //Other parameters that are important to have
                 mainRequest.KeepAlive = false;
@@ -77,12 +115,16 @@ namespace _410AgileCsharp
 
                 return true;
             }
-            catch(Exception OhNo)
+            catch (Exception OhNo)
             {
                 Console.WriteLine(OhNo.Message.ToString());
                 return false;
             }
+        }
 
+        private bool LogOnSaved()
+        {
+            return true;
         }
 
         public bool LogOff()
