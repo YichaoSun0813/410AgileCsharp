@@ -78,6 +78,13 @@ namespace _410AgileCsharp
 							mainHandler.LogOn();
 							mainHandler.DownLoad();
 							break;
+						case "delete":
+							Console.WriteLine("Enter filename to DELETE from the ftp.\n");
+							string deleteFile = Console.ReadLine();
+							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url + '/' + deleteFile);
+							mainHandler.LogOn();
+							mainHandler.DeleteFile();
+							break;
 						case "ls":
 							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url);
 							mainHandler.LogOn();

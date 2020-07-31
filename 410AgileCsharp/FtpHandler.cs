@@ -128,5 +128,17 @@ namespace _410AgileCsharp
 
 			mainResponse.Close();
 		}
+
+		public void DeleteFile()
+		{
+			//FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://www.server.com/" + fileName);
+			mainRequest.Method = WebRequestMethods.Ftp.DeleteFile;
+			//request.Credentials = new NetworkCredential("username", "password");
+
+			using (FtpWebResponse response = (FtpWebResponse)mainRequest.GetResponse())
+			{
+				Console.WriteLine(response.StatusDescription);
+			}
+		}
 	}
 }
