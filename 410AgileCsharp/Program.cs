@@ -29,7 +29,8 @@ namespace _410AgileCsharp
             var command = "l";
             var request = mainHandler.LogOn();
             var listRemote = new RemoteLS();
-
+            var spaceIndex = 0;
+            var name = "";
             if (request != null)
             {
                 Console.WriteLine("logOn successfull");
@@ -37,9 +38,22 @@ namespace _410AgileCsharp
                 {
                     Console.WriteLine("Enter a command");
                     command = Console.ReadLine();
+                    spaceIndex = command.IndexOf(' ');
+                    if (spaceIndex > 0)
+                    {
+                        name = command.Substring(spaceIndex + 1, command.Length);
+                        command = command.Substring(0, spaceIndex);
+                        Console.Write("command: " + command);
+                        Console.Write("name is: " + name);
+                    }
+
                     if (command == "ls")
                     {
                         listRemote.ListRemote(mainHandler);
+                    }
+                    if (command == "mkdir")
+                    {
+                        
                     }
                 }
                 mainHandler.LogOff();

@@ -1,26 +1,34 @@
 ﻿using System;
 using System.Net;
 using System.IO;
+using _410AgileCsharp;
+
 namespace CreateRemoteDirectory
 {
     class RemoteMkDir
     {
-        public FtpWebRequest FtpWebRequest;
+        public FtpWebRequest ftpWebRequest;
         public FtpWebResponse ftpWebResponse;
 
-        public bool MkDirRemote()
+        public bool MkDirRemote(FtpHandler handler, string name)
         {
             try
             {
-
-                FtpWebRequest = (FtpWebRequest)WebRequest.Create("ftp://test.rebex.net/");
-                FtpWebRequest.Method = WebRequestMethods.Ftp.MakeDirectory;
-
-
+                ftpWebRequest = (FtpWebRequest)WebRequest.Create(handler.url + name);
+                ftpWebRequest.Method = WebRequestMethods.Ftp.MakeDirectory;
+                ftpWebRequest.Credentials = new NetworkCredential(handler.savedUserName, handler.savedPassword);
+                ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
+                if (ftpWebResponse.StatusCode != FtpStatusCode.CommandOK)
+                {
+                    Console.WriteLine("directory failed top be created");
+                    return false;
+                }
+                return true;
             }
-            catch
+            catch (Exception fail)
             {
-
+                Console.WriteLine(fail.Message.ToString());
+                return false;
             }
         }
 
