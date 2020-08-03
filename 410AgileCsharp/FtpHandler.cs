@@ -15,6 +15,7 @@ namespace _410AgileCsharp
         public string url;
         public string currentUser;
         public SecureString currentPass;
+        private SavedConnectionHandler savedConnections;
 
         public bool LogOn() {
             Console.WriteLine("1) Log onto a server with url, username, and password, OR");
@@ -124,7 +125,8 @@ namespace _410AgileCsharp
 
         private bool LogOnSaved()
         {
-            return true;
+            savedConnections.ReadAll();
+            return savedConnections.Connect(this);
         }
 
         public bool LogOff()
