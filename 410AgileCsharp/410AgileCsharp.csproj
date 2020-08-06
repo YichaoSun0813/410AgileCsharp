@@ -6,4 +6,9 @@
     <RootNamespace>_410AgileCsharp</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="FileUploader.cs" />
+    <Compile Remove="WebRequestMethods.cs" />
+  </ItemGroup>
+
 </Project>
