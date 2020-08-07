@@ -20,11 +20,15 @@ namespace _410AgileCsharp
             //read from text file, load into an array of SavedConnections. Display entire array at the end. 
             try
             {
-                using var sr = new StreamReader("SavedConnections.txt");
+                StreamReader sr = new StreamReader("SavedConnections.txt");
+
                 for (int i = 0; !sr.EndOfStream; i++)
                 {
-                    connectionList[i].url = sr.ReadLine();
-                    connectionList[i].userName = sr.ReadLine();
+                    connectionList[i] = new SavedConnection
+                    {
+                        url = sr.ReadLine(),
+                        userName = sr.ReadLine()
+                    };
                 }
             }
             catch(IOException e)
