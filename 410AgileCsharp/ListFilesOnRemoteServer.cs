@@ -10,13 +10,13 @@ namespace ListFilesOnRemoteServer
         public FtpWebRequest lsRequest;
         public FtpWebResponse lsResponse;
 
-        public bool ListRemote(FtpHandler handler)
+        public bool ListRemote(FtpHandler handler, string url)
         {
             try
             {
-                lsRequest = (FtpWebRequest)WebRequest.Create(handler.url);
+                lsRequest = (FtpWebRequest)WebRequest.Create(url);
                 lsRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-                lsRequest.Credentials = new NetworkCredential(handler.savedUserName, handler.savedPassword);
+                lsRequest.Credentials = new NetworkCredential(handler.userName, handler.securePwd);
                 lsResponse = (FtpWebResponse)lsRequest.GetResponse();
                 Stream responseStream = lsResponse.GetResponseStream();
                 StreamReader reader = new StreamReader(responseStream);
