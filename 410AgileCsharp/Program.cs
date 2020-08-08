@@ -56,7 +56,7 @@ namespace _410AgileCsharp
 								string currnetFile = Console.ReadLine();
 								Console.WriteLine("Enter the new name.\n");
 								string newFileName = Console.ReadLine();
-								mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url + '/' + currnetFile);
+								mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + currnetFile);
 								mainHandler.LogOn();
 								mainHandler.RenameRemoteFile(newFileName);
 								break;
