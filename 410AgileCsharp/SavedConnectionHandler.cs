@@ -24,8 +24,8 @@ namespace _410AgileCsharp
                 //check if file exists, create it if it does not
                 if (!File.Exists("SavedConnections.txt"))
                 {
-                    System.IO.File.Create("SavedConnections.txt");
-                    Console.WriteLine("No saved connection file found. Creating an empty file and exiting.");
+                    //System.IO.File.Create("SavedConnections.txt");
+                    Console.WriteLine("No saved connection file found. You must save a connection before you can connect to it :)");
                     return false;
                 }
 
@@ -41,17 +41,6 @@ namespace _410AgileCsharp
                 }
 
                 return true;
-
-                /*
-                for (int i = 0; !sr.EndOfStream; i++)
-                {
-                    connectionList[i] = new SavedConnection
-                    {
-                        url = sr.ReadLine(),
-                        userName = sr.ReadLine()
-                    };
-                }
-                */
             }
             catch(IOException e)
             {
@@ -175,16 +164,20 @@ namespace _410AgileCsharp
         public bool SaveConnection(FtpHandler toSave)
         {
             //Allow user to save connection that current FtpHandler is connected to. Append saved connection info, and write to text file.
+            StreamWriter sw;
             if(connectionList == null)
             {
-                if (!ReadAll()) {
-                    Console.WriteLine("Unable to read file. Exiting connection saving.");
-                    return false; 
-                };
+                if (!File.Exists("SavedConnections.txt")) {
+                    File.Create("SavedConnections.txt"); 
+                }
             }
-            StreamWriter sw = File.AppendText("SavedConnections.txt");
+            sw = File.AppendText("SavedConnections.txt");
+
             sw.WriteLine(toSave.url);
             sw.WriteLine(toSave.currentUser);
+            sw.Flush();
+
+            Console.WriteLine("Connection saved!");
 
             return true;
         }

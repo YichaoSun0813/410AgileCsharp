@@ -15,18 +15,19 @@ namespace _410AgileCsharp
         public SecureString currentPass;
         private SavedConnectionHandler savedConnections;
 
-        public bool LogOn() {
-            Console.WriteLine("1) Log onto a server with url, username, and password, OR");
-            Console.WriteLine("2) Log onto a previously saved server");
+        public bool LogOnInitial() {
             for (; ; )
             {
-                Console.Write(": ");
+				Console.WriteLine("1) Log onto a server with url, username, and password, OR");
+				Console.WriteLine("2) Log onto a previously saved server");
+				Console.Write(": ");
                 string userInput = Console.ReadLine();
                 switch (userInput) {
                     case "1":
                         return LogOnUnsaved();
                     case "2":
-                        return LogOnSaved();
+						if (LogOnSaved()) { return true; }
+						else break;
                     default:
                         Console.WriteLine("Unrecognized Input");
                         break;
@@ -34,7 +35,26 @@ namespace _410AgileCsharp
             }
         }
 
-        private bool LogOnUnsaved()
+		public void LogOn()
+		{
+			//maybe we could prompt for this? I'm not sure if it matters. Can be tacked on to the end of a NetworkCredential constructor.
+			/*
+			//Domain
+			Console.Write("Enter Domain: ");
+			string domain = Console.ReadLine();
+			*/
+
+			//Now, we feed all of these into a NetworkCredentials class, and feed that into our FtpWebRequest
+			mainRequest.Credentials = new NetworkCredential(currentUser, currentPass);
+
+			//Other parameters that are important to have
+			mainRequest.KeepAlive = true;
+			mainRequest.UseBinary = true;
+			mainRequest.UsePassive = true;
+
+		}
+
+		private bool LogOnUnsaved()
         {
             try
             {
@@ -97,15 +117,14 @@ namespace _410AgileCsharp
                 mainRequest.UseBinary = true;
                 mainRequest.UsePassive = true;
 
-
-						return true;
-		}
+				return true;
+			}
             catch (Exception OhNo)
             {
                 Console.WriteLine(OhNo.Message.ToString());
                 return false;
             }
-}
+        }
 
 		private bool LogOnSaved()
 		{
@@ -120,6 +139,12 @@ namespace _410AgileCsharp
 			}
 		}
 
+		public void SaveInfo()
+        {
+			//saves current connection into savedConnections.
+			if(savedConnections == null) { savedConnections = new SavedConnectionHandler(); }
+			savedConnections.SaveConnection(this);
+        }
 
 
 		public void ListDirectoryDetails()
@@ -145,7 +170,8 @@ namespace _410AgileCsharp
 
 			try
 			{
-				mainResponse.Close();
+				if(mainResponse != null) { mainResponse.Close(); }
+				
 				Console.WriteLine("Connection Closed!");
 				return true;
 			}
