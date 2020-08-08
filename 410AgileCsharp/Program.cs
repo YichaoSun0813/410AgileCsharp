@@ -59,7 +59,7 @@ namespace _410AgileCsharp
 				bool loop = true;
 				while (loop)
 				{
-					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\ndownload = DownLoad File\nd = Disconnect\n");
+					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\ndownload = DownLoad File\ndelete = Delete a File\nrr = Rename a Remote File\nd = Disconnect\n");
 					string command = Console.ReadLine();
 
 					switch (command.ToLower())
@@ -89,6 +89,15 @@ namespace _410AgileCsharp
 							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url);
 							mainHandler.LogOn();
 							mainHandler.ListDirectoryDetails();
+							break;
+						case "rr":
+							Console.WriteLine("Enter filename to Rename from the ftp.\n");
+							string currnetFile = Console.ReadLine();
+							Console.WriteLine("Enter the new name.\n");
+							string newFileName = Console.ReadLine();
+							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url + '/' + currnetFile);
+							mainHandler.LogOn();
+							mainHandler.RenameRemoteFile(newFileName);
 							break;
 						case "d":
 							loop = false;
