@@ -126,8 +126,14 @@ namespace _410AgileCsharp
         private bool LogOnSaved()
         {
             savedConnections = new SavedConnectionHandler();
-            savedConnections.ReadAll();
-            return savedConnections.Connect(this);
+            if (savedConnections.ReadAll())
+            {
+                return savedConnections.Connect(this);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool LogOff()
