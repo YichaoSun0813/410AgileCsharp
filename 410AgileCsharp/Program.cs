@@ -51,6 +51,15 @@ namespace _410AgileCsharp
 							case "save":
 								mainHandler.SaveInfo();
 								break;
+							case "rr":
+								Console.WriteLine("Enter filename to Rename from the ftp.\n");
+								string currnetFile = Console.ReadLine();
+								Console.WriteLine("Enter the new name.\n");
+								string newFileName = Console.ReadLine();
+								mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url + '/' + currnetFile);
+								mainHandler.LogOn();
+								mainHandler.RenameRemoteFile(newFileName);
+								break;
 							case "d":
 								loop = false;
 								break;
