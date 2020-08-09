@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ListFilesOnRemoteServer;
+using System;
 using System.Net;
 using System.Security;
 
@@ -9,6 +10,7 @@ namespace _410AgileCsharp
 		static void Main(string[] args)
 		{
 			FtpHandler mainHandler = new FtpHandler();
+			RemoteLS listRemote = new RemoteLS();
 
 			//Prompt for FTP URL, and add into FtpWebRequest.
 			//Keep in mind that this needs to be a full URL, which should look something like this: ftp://HostName.com/
@@ -34,7 +36,7 @@ namespace _410AgileCsharp
 				key = Console.ReadKey(true);
 
 				// Ignore any key out of range.
-				if (((int)key.Key) >= 65 && ((int)key.Key <= 90) || (int)key.Key == 189)
+				if (((int)key.Key) >=31  && ((int)key.Key <= 122) || (int)key.Key == 189)
 				{
 					// Append the character to the password.
 					mainHandler.securePwd.AppendChar(key.KeyChar);
@@ -51,7 +53,7 @@ namespace _410AgileCsharp
 			//Allows mainRequest to make multiple requests. Otherwise, connection will close after one request.
 			mainHandler.mainRequest.KeepAlive = true;
 			mainHandler.LogOn();
-			mainHandler.ListDirectoryDetails();
+			listRemote.ListRemote(mainHandler, url);
 			Console.WriteLine("logOn successfull\n");
 
 			try
@@ -86,9 +88,7 @@ namespace _410AgileCsharp
 							mainHandler.DeleteFile();
 							break;
 						case "ls":
-							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url);
-							mainHandler.LogOn();
-							mainHandler.ListDirectoryDetails();
+							listRemote.ListRemote(mainHandler, url);
 							break;
 						case "rr":
 							Console.WriteLine("Enter filename to Rename from the ftp.\n");

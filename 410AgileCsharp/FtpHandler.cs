@@ -32,23 +32,6 @@ namespace _410AgileCsharp
 
 		}
 
-		public void ListDirectoryDetails()
-		{
-			//List all files in directory, for testing, and to make sure we're connected
-			mainRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-			//Assign to mainResponse
-			mainResponse = (FtpWebResponse)mainRequest.GetResponse();
-			//Read the response stream
-			Stream responseStream = mainResponse.GetResponseStream();
-			StreamReader responseRead = new StreamReader(responseStream);
-			//Print
-			Console.WriteLine(responseRead.ReadToEnd());
-
-			//gracefully exit reader and response
-			responseRead.Close();
-			mainResponse.Close();
-		}
-
 		public bool LogOff()
 		{
 			//Logs user off of open FTP connection
