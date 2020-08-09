@@ -1,9 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using ListFilesOnRemoteServer;
+using System;
 using System.Net;
 using System.Security;
-using System.Text;
-using ListFilesOnRemoteServer;
 
 namespace _410AgileCsharp
 {
@@ -106,69 +104,6 @@ namespace _410AgileCsharp
 				Console.WriteLine(OhJeeze.Message.ToString());
 				return false;
 			}
-		}
-
-		//Resources https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-download-files-with-ftp
-		// example file: @"\\IPAddress or remote machine Name\ShareFolder\FileName.txt"
-		public void DownLoad()
-		{
-			try
-			{
-				mainRequest.Method = WebRequestMethods.Ftp.DownloadFile;
-
-				mainResponse = (FtpWebResponse)mainRequest.GetResponse();
-
-				Stream responseStream = mainResponse.GetResponseStream();
-				StreamReader reader = new StreamReader(responseStream);
-				Console.WriteLine(reader.ReadToEnd());
-
-				Console.WriteLine($"Download Complete, status {mainResponse.StatusDescription}");
-
-				reader.Close();
-				mainResponse.Close();
-			}
-			catch (IOException ex)
-			{
-				Console.WriteLine("Loading file Failed");
-				Console.WriteLine(ex.Message);
-			}
-		}
-
-		//Resources https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-read-text-from-a-file
-		// https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-upload-files-with-ftp
-		// example file: @"\\IPAddress or remote machine Name\ShareFolder\FileName.txt"
-		public void UpLoad(string file)
-		{
-			try
-			{
-				mainRequest.Method = WebRequestMethods.Ftp.UploadFile;
-
-				// Copy the contents of the file to the request stream.
-				byte[] fileContents;
-				using (StreamReader str = new StreamReader(file))
-				{
-					fileContents = Encoding.UTF8.GetBytes(str.ReadToEnd());
-				}
-
-				mainRequest.ContentLength = fileContents.Length;
-
-				using (Stream requestStream = mainRequest.GetRequestStream())
-				{
-					requestStream.Write(fileContents, 0, fileContents.Length);
-				}
-
-				using (FtpWebResponse response = (FtpWebResponse)mainRequest.GetResponse())
-				{
-					Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
-				}
-			}
-			catch (IOException ex)
-			{
-				Console.WriteLine("Loading file Failed");
-				Console.WriteLine(ex.Message);
-			}
-
-			mainResponse.Close();
 		}
 
 		public void DeleteFile()

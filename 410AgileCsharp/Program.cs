@@ -1,8 +1,9 @@
 ﻿using CreateRemoteDirectory;
+using DownloadFileFromRemoteServer;
 using ListFilesOnRemoteServer;
 using System;
 using System.Net;
-using System.Security;
+using UploadFileToRemoteServer;
 
 namespace _410AgileCsharp
 {
@@ -13,6 +14,8 @@ namespace _410AgileCsharp
 			FtpHandler mainHandler = new FtpHandler();
 			RemoteLS listRemote = new RemoteLS();
 			RemoteMkDir mkDirRemote = new RemoteMkDir();
+			Upload upload = new Upload();
+			Download download = new Download();
 			mainHandler.LogOn();
 
 			try
@@ -28,16 +31,12 @@ namespace _410AgileCsharp
 						case "upload":
 							Console.WriteLine("Enter the filename to put on the ftp.\n");
 							string upFile = Console.ReadLine();
-							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + upFile);
-							mainHandler.LogOn();
-							mainHandler.UpLoad(upFile);
+							upload.UploadToRemote(mainHandler, upFile);
 							break;
 						case "download":
 							Console.WriteLine("Enter filename to take from the ftp.\n");
 							string downFile = Console.ReadLine();
-							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + downFile);
-							mainHandler.LogOn();
-							mainHandler.DownLoad();
+							download.DownloadFromRemote(mainHandler, downFile);
 							break;
 						case "delete":
 							Console.WriteLine("Enter filename to DELETE from the ftp.\n");
