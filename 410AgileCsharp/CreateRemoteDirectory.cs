@@ -23,11 +23,6 @@ namespace CreateRemoteDirectory
                 ftpWebRequest.Method = WebRequestMethods.Ftp.MakeDirectory;
                 ftpWebRequest.Credentials = new NetworkCredential(handler.userName, handler.securePwd);
                 ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
-                if (ftpWebResponse.StatusCode != FtpStatusCode.CommandOK)
-                {
-                    Console.WriteLine("directory failed to be created");
-                    return false;
-                }
                 return true;
             }
             catch (Exception fail)
