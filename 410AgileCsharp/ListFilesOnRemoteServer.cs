@@ -2,6 +2,7 @@
 using System.Net;
 using System.IO;
 using _410AgileCsharp;
+using System.Net.Http;
 
 namespace ListFilesOnRemoteServer
 {
@@ -10,18 +11,22 @@ namespace ListFilesOnRemoteServer
         public FtpWebRequest lsRequest;
         public FtpWebResponse lsResponse;
 
-        public bool ListRemote(FtpHandler handler, string url)
+        public bool ListRemote(FtpHandler handler)
         {
             try
             {
-                lsRequest = (FtpWebRequest)WebRequest.Create(url);
+                lsRequest = (FtpWebRequest)WebRequest.Create(handler.url);
                 lsRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
                 lsRequest.Credentials = new NetworkCredential(handler.userName, handler.securePwd);
                 lsResponse = (FtpWebResponse)lsRequest.GetResponse();
                 Stream responseStream = lsResponse.GetResponseStream();
                 StreamReader reader = new StreamReader(responseStream);
                 Console.WriteLine(reader.ReadToEnd());
-                reader.Close();
+                if (lsResponse.StatusCode == FtpStatusCode.NotLoggedIn)
+                {
+                    return false;
+                }
+                    reader.Close();
                 lsResponse.Close();
                 return true;
 

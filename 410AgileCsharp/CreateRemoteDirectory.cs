@@ -2,6 +2,7 @@
 using System.Net;
 using System.IO;
 using _410AgileCsharp;
+using System.Linq;
 
 namespace CreateRemoteDirectory
 {
@@ -14,13 +15,17 @@ namespace CreateRemoteDirectory
         {
             try
             {
+                if (!handler.url.EndsWith('/'))
+                {
+                    handler.url.Append('/');
+                }
                 ftpWebRequest = (FtpWebRequest)WebRequest.Create(handler.url + name);
                 ftpWebRequest.Method = WebRequestMethods.Ftp.MakeDirectory;
-                ftpWebRequest.Credentials = new NetworkCredential(handler.savedUserName, handler.savedPassword);
+                ftpWebRequest.Credentials = new NetworkCredential(handler.userName, handler.securePwd);
                 ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
                 if (ftpWebResponse.StatusCode != FtpStatusCode.CommandOK)
                 {
-                    Console.WriteLine("directory failed top be created");
+                    Console.WriteLine("directory failed to be created");
                     return false;
                 }
                 return true;
