@@ -1,8 +1,9 @@
 ﻿using CreateRemoteDirectory;
+using DeleteFileFromRemoteServer;
 using DownloadFileFromRemoteServer;
 using ListFilesOnRemoteServer;
+using RenameFileFromRemoteServer;
 using System;
-using System.Net;
 using UploadFileToRemoteServer;
 
 namespace _410AgileCsharp
@@ -16,6 +17,8 @@ namespace _410AgileCsharp
 			RemoteMkDir mkDirRemote = new RemoteMkDir();
 			Upload upload = new Upload();
 			Download download = new Download();
+			Rename rename = new Rename();
+			Delete delete = new Delete();
 			mainHandler.LogOnInitial();
 
 			try
@@ -41,9 +44,7 @@ namespace _410AgileCsharp
 						case "delete":
 							Console.WriteLine("Enter filename to DELETE from the ftp.\n");
 							string deleteFile = Console.ReadLine();
-							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + deleteFile);
-							mainHandler.LogOn();
-							mainHandler.DeleteFile();
+							delete.DeleteRemoteFile(mainHandler, deleteFile);
 							break;
 						case "ls":
 							listRemote.ListRemote(mainHandler);
@@ -53,9 +54,7 @@ namespace _410AgileCsharp
 							string currnetFile = Console.ReadLine();
 							Console.WriteLine("Enter the new name.\n");
 							string newFileName = Console.ReadLine();
-							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + currnetFile);
-							mainHandler.LogOn();
-							mainHandler.RenameRemoteFile(newFileName);
+							rename.RenameRemoteFile(mainHandler, currnetFile, newFileName);
 							break;
 						case "d":
 							loop = false;

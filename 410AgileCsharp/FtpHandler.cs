@@ -222,37 +222,5 @@ namespace _410AgileCsharp
 				return false;
 			}
 		}
-
-		public void DeleteFile()
-		{
-			try
-			{
-				mainRequest.Method = WebRequestMethods.Ftp.DeleteFile;
-
-				using (FtpWebResponse response = (FtpWebResponse)mainRequest.GetResponse())
-				{
-					Console.WriteLine(response.StatusDescription);
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
-		}
-
-		public void RenameRemoteFile(string newFilename)
-		{
-			try
-			{
-				mainRequest.Method = WebRequestMethods.Ftp.Rename;
-				mainRequest.RenameTo = newFilename;
-				mainResponse = (FtpWebResponse)mainRequest.GetResponse();
-				mainResponse.Close();
-			}
-			catch(Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
-		}
 	}
 }
