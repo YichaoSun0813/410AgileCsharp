@@ -19,6 +19,7 @@ namespace _410AgileCsharp
 			Download download = new Download();
 			Rename rename = new Rename();
 			Delete delete = new Delete();
+
 			mainHandler.LogOnInitial();
 
 			try

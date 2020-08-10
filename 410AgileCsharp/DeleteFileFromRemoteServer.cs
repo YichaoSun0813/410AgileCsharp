@@ -20,6 +20,7 @@ namespace DeleteFileFromRemoteServer
 				{
 					Console.WriteLine(response.StatusDescription);
 				}
+				Console.WriteLine($"Deleting {file} Complete");
 				return true;
 			}
 			catch (Exception fail)

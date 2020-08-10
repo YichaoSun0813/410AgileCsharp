@@ -21,6 +21,8 @@ namespace RenameFileFromRemoteServer
 				renameRequest.RenameTo = newName;
 				renameResponse = (FtpWebResponse)renameRequest.GetResponse();
 				renameResponse.Close();
+
+				Console.WriteLine($"{file} Renamed to {newName}");
 				return true;
 			}
 			catch (Exception fail)
