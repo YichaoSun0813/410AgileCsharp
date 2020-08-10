@@ -4,6 +4,7 @@ using DownloadFileFromRemoteServer;
 using ListFilesOnRemoteServer;
 using RenameFileFromRemoteServer;
 using System;
+using System.IO;
 using UploadFileToRemoteServer;
 
 namespace _410AgileCsharp
@@ -27,7 +28,7 @@ namespace _410AgileCsharp
 				bool loop = true;
 				while (loop)
 				{
-					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\ndownload = DownLoad File\ndelete = Delete a File\nrr = Rename a Remote File\nmkdir = Make a Remote Directory\nsave = Save currenly connected server \nd = Disconnect\n");
+					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\nupload-m = Upload Multiple files\ndownload = DownLoad File\ndelete = Delete a File\nrr = Rename a Remote File\nmkdir = Make a Remote Directory\nsave = Save currenly connected server \nd = Disconnect\n");
 					string command = Console.ReadLine();
 
 					switch (command.ToLower())
@@ -36,6 +37,11 @@ namespace _410AgileCsharp
 							Console.WriteLine("Enter the filename to put on the ftp.\n");
 							string upFile = Console.ReadLine();
 							upload.UploadToRemote(mainHandler, upFile);
+							break;
+						case "upload-m":
+							Console.WriteLine("Enter the filename to put on the ftp seperated by \";\"'s.\n");
+							string upFiles = Console.ReadLine();
+							upload.UploadMultipleToRemote(mainHandler, upFiles);
 							break;
 						case "download":
 							Console.WriteLine("Enter filename to take from the ftp.\n");
@@ -81,6 +87,7 @@ namespace _410AgileCsharp
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex);
+				File.WriteAllText("log.txt", ex.ToString());
 			}
 		}
 	}

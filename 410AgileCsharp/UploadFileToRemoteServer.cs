@@ -36,13 +36,32 @@ namespace UploadFileToRemoteServer
 
 				using (FtpWebResponse uploadResponse = (FtpWebResponse)uploadRequest.GetResponse())
 				{
-					Console.WriteLine($"Upload File Complete, status {uploadResponse.StatusDescription}");
+					Console.WriteLine($"Upload File \"{file}\" Complete, status {uploadResponse.StatusDescription}");
 				}
 				return true;
 			}
 			catch (Exception fail)
 			{
-				Console.WriteLine("Loading file Failed");
+				Console.WriteLine($"Loading {file} Failed");
+				Console.WriteLine(fail.Message.ToString());
+				return false;
+			}
+		}
+
+		public bool UploadMultipleToRemote(FtpHandler handler, string file)
+		{
+			try
+			{
+				string[] files = file.Split(";");
+				foreach (var f in files)
+				{
+					UploadToRemote(handler, f);
+				}
+				return true;
+			}
+			catch (Exception fail)
+			{
+				Console.WriteLine($"Loading {file} Failed");
 				Console.WriteLine(fail.Message.ToString());
 				return false;
 			}
