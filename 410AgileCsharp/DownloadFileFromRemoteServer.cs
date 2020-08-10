@@ -12,6 +12,7 @@ namespace DownloadFileFromRemoteServer
 		//Resources https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-download-files-with-ftp
 		// https://stackoverflow.com/questions/12519290/downloading-files-using-ftpwebrequest
 		// example file: @"\\IPAddress or remote machine Name\ShareFolder\FileName.txt"
+		// Right now it puts the file in the C:\Temp folder.
 		public bool DownloadFromRemote(FtpHandler handler, string file)
 		{
 			try

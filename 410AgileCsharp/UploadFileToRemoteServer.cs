@@ -13,6 +13,7 @@ namespace UploadFileToRemoteServer
 		//Resources https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-read-text-from-a-file
 		// https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-upload-files-with-ftp
 		// example file: @"\\IPAddress or remote machine Name\ShareFolder\FileName.txt"
+		// Right now it looks in the \bin\Debug\netcoreapp3.1\ folder for your file to upload
 		public bool UploadToRemote(FtpHandler handler, string file)
 		{
 			try
