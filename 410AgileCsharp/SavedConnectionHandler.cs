@@ -77,11 +77,12 @@ namespace _410AgileCsharp
                 }
 
                 //prompt user for a selection
-                Console.Write("Make a selection: ");
-                string userInput = Console.ReadLine();
-                int userResult;
                 for (; ; )
                 {
+                    Console.Write("Make a selection: ");
+                    string userInput = Console.ReadLine();
+                    int userResult;
+
                     try
                     {
                         userResult = Int32.Parse(userInput);
@@ -89,6 +90,9 @@ namespace _410AgileCsharp
                         {
                             throw new Exception();
                         }
+                        //feed connectionList result into our FtpHandler
+                        toConnect.url = connectionList[userResult].url;
+                        toConnect.userName = connectionList[userResult].userName;
                         break;
                     }
                     catch (FormatException)
@@ -103,15 +107,13 @@ namespace _410AgileCsharp
                     }
                 }
 
-                //feed connectionList result into our FtpHandler
-                toConnect.url = connectionList[userResult].url;
-                toConnect.currentUser = connectionList[userResult].userName;
+
 
                 //the rest is copy paste from logonunsaved
 
                 toConnect.mainRequest = (FtpWebRequest)WebRequest.Create(toConnect.url);
 
-                toConnect.currentPass = new SecureString();
+                toConnect.securePwd = new SecureString();
                 ConsoleKeyInfo key;
 
                 Console.Write("Enter password: ");
@@ -123,7 +125,7 @@ namespace _410AgileCsharp
                     if (((int)key.Key) >= 65 && ((int)key.Key <= 90))
                     {
                         // Append the character to the password.
-                        toConnect.currentPass.AppendChar(key.KeyChar);
+                        toConnect.securePwd.AppendChar(key.KeyChar);
                         Console.Write("*");
                     }
                     // Exit if Enter key is pressed.
@@ -131,7 +133,7 @@ namespace _410AgileCsharp
                 Console.WriteLine();
 
                 //Now, we feed all of these into a NetworkCredentials class, and feed that into our FtpWebRequest
-                toConnect.mainRequest.Credentials = new NetworkCredential(toConnect.currentUser, toConnect.currentPass);
+                toConnect.mainRequest.Credentials = new NetworkCredential(toConnect.userName, toConnect.securePwd);
 
                 //Other parameters that are important to have
                 toConnect.mainRequest.KeepAlive = false;
@@ -174,7 +176,7 @@ namespace _410AgileCsharp
             sw = File.AppendText("SavedConnections.txt");
 
             sw.WriteLine(toSave.url);
-            sw.WriteLine(toSave.currentUser);
+            sw.WriteLine(toSave.userName);
             sw.Flush();
 
             Console.WriteLine("Connection saved!");

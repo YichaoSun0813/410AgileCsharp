@@ -16,14 +16,14 @@ namespace _410AgileCsharp
 			RemoteMkDir mkDirRemote = new RemoteMkDir();
 			Upload upload = new Upload();
 			Download download = new Download();
-			mainHandler.LogOn();
+			mainHandler.LogOnInitial();
 
 			try
 			{
 				bool loop = true;
 				while (loop)
 				{
-					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\ndownload = DownLoad File\ndelete = Delete a File\nrr = Rename a Remote File\nmkdir = Make a Remote Directory\nd = Disconnect\n");
+					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\ndownload = DownLoad File\ndelete = Delete a File\nrr = Rename a Remote File\nmkdir = Make a Remote Directory\nsave = Save currenly connected server \nd = Disconnect\n");
 					string command = Console.ReadLine();
 
 					switch (command.ToLower())
@@ -64,6 +64,9 @@ namespace _410AgileCsharp
 							Console.WriteLine("Enter directory name. \n");
 							string dir = Console.ReadLine();
 							mkDirRemote.MkDirRemote(mainHandler, dir);
+							break;
+						case "save":
+							mainHandler.SaveInfo();
 							break;
 						default:
 							Console.WriteLine("Wrong Command.\n");
