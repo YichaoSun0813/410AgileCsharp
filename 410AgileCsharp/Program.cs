@@ -1,6 +1,9 @@
-﻿using System;
+﻿using CreateRemoteDirectory;
+using DownloadFileFromRemoteServer;
+using ListFilesOnRemoteServer;
+using System;
 using System.Net;
-using System.Security;
+using UploadFileToRemoteServer;
 
 namespace _410AgileCsharp
 {
@@ -9,80 +12,73 @@ namespace _410AgileCsharp
 		static void Main(string[] args)
 		{
 			FtpHandler mainHandler = new FtpHandler();
+			RemoteLS listRemote = new RemoteLS();
+			RemoteMkDir mkDirRemote = new RemoteMkDir();
+			Upload upload = new Upload();
+			Download download = new Download();
+			mainHandler.LogOn();
 
-			if (mainHandler.LogOnInitial())
+			try
 			{
-				try
+				bool loop = true;
+				while (loop)
 				{
-					bool loop = true;
-					while (loop)
-					{
-						Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\ndownload = DownLoad File\nsave = Save Connection Information\nd = Disconnect\n");
-						string command = Console.ReadLine();
+					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\ndownload = DownLoad File\ndelete = Delete a File\nrr = Rename a Remote File\nmkdir = Make a Remote Directory\nd = Disconnect\n");
+					string command = Console.ReadLine();
 
-						switch (command.ToLower())
-						{
-							case "upload":
-								Console.WriteLine("Enter the filename to put on the ftp.\n");
-								string upFile = Console.ReadLine();
-								mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + upFile);
-								mainHandler.LogOn();
-								mainHandler.UpLoad(upFile);
-								break;
-							case "download":
-								Console.WriteLine("Enter filename to take from the ftp.\n");
-								string downFile = Console.ReadLine();
-								mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + downFile);
-								mainHandler.LogOn();
-								mainHandler.DownLoad();
-								break;
-							case "delete":
-								Console.WriteLine("Enter filename to DELETE from the ftp.\n");
-								string deleteFile = Console.ReadLine();
-								mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + deleteFile);
-								mainHandler.LogOn();
-								mainHandler.DeleteFile();
-								break;
-							case "ls":
-								mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url);
-								mainHandler.LogOn();
-								mainHandler.ListDirectoryDetails();
-								break;
-							case "save":
-								mainHandler.SaveInfo();
-								break;
-							case "rr":
-								Console.WriteLine("Enter filename to Rename from the ftp.\n");
-								string currnetFile = Console.ReadLine();
-								Console.WriteLine("Enter the new name.\n");
-								string newFileName = Console.ReadLine();
-								mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + currnetFile);
-								mainHandler.LogOn();
-								mainHandler.RenameRemoteFile(newFileName);
-								break;
-							case "d":
-								loop = false;
-								break;
-							default:
-								Console.WriteLine("Wrong Command.\n");
-								break;
-						}
-						command = string.Empty;
+					switch (command.ToLower())
+					{
+						case "upload":
+							Console.WriteLine("Enter the filename to put on the ftp.\n");
+							string upFile = Console.ReadLine();
+							upload.UploadToRemote(mainHandler, upFile);
+							break;
+						case "download":
+							Console.WriteLine("Enter filename to take from the ftp.\n");
+							string downFile = Console.ReadLine();
+							download.DownloadFromRemote(mainHandler, downFile);
+							break;
+						case "delete":
+							Console.WriteLine("Enter filename to DELETE from the ftp.\n");
+							string deleteFile = Console.ReadLine();
+							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + deleteFile);
+							mainHandler.LogOn();
+							mainHandler.DeleteFile();
+							break;
+						case "ls":
+							listRemote.ListRemote(mainHandler);
+							break;
+						case "rr":
+							Console.WriteLine("Enter filename to Rename from the ftp.\n");
+							string currnetFile = Console.ReadLine();
+							Console.WriteLine("Enter the new name.\n");
+							string newFileName = Console.ReadLine();
+							mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(mainHandler.url + '/' + currnetFile);
+							mainHandler.LogOn();
+							mainHandler.RenameRemoteFile(newFileName);
+							break;
+						case "d":
+							loop = false;
+							break;
+						case "mkdir":
+							Console.WriteLine("Enter directory name. \n");
+							string dir = Console.ReadLine();
+							mkDirRemote.MkDirRemote(mainHandler, dir);
+							break;
+						default:
+							Console.WriteLine("Wrong Command.\n");
+							break;
 					}
-					Console.WriteLine("Press enter to disconnect");
-					Console.ReadLine();
-					mainHandler.LogOff();
+					command = string.Empty;
 				}
-				catch (Exception ex)
-				{
-					Console.WriteLine(ex);
-				}
+				Console.WriteLine("Press enter to disconnect");
+				Console.ReadLine();
+				mainHandler.LogOff();
 			}
-            else
-            {
-				Console.WriteLine("Log on unsuccessful. :(");
-				return;
-            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+			}
 		}
 	}
 }
