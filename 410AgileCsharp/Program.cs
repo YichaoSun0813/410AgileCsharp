@@ -1,55 +1,94 @@
-﻿using ListFilesOnRemoteServer;
+﻿using CreateRemoteDirectory;
+using DeleteFileFromRemoteServer;
+using DownloadFileFromRemoteServer;
+using ListFilesOnRemoteServer;
+using RenameFileFromRemoteServer;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
+using System.IO;
+using UploadFileToRemoteServer;
 
 namespace _410AgileCsharp
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            FtpHandler mainHandler = new FtpHandler();
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			FtpHandler mainHandler = new FtpHandler();
+			RemoteLS listRemote = new RemoteLS();
+			RemoteMkDir mkDirRemote = new RemoteMkDir();
+			Upload upload = new Upload();
+			Download download = new Download();
+			Rename rename = new Rename();
+			Delete delete = new Delete();
 
-            //Prompt for FTP URL, and add into FtpWebRequest.
-            //Keep in mind that this needs to be a full URL, which should look something like this: ftp://HostName.com/
-            //This also initializes FtpWebRequest, which is kinda major. Maybe we should find a way to move this? 
-            //Maybe mainHandler constructor?
-            Console.Write("Enter an FTP server URL: ");
-            string url = Console.ReadLine();
-            mainHandler.mainRequest = (FtpWebRequest)WebRequest.Create(url);
-            mainHandler.url = url;
+			mainHandler.LogOnInitial();
 
+			try
+			{
+				bool loop = true;
+				while (loop)
+				{
+					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\nupload-m = Upload Multiple files\ndownload = DownLoad File\ndelete = Delete a File\nrr = Rename a Remote File\nmkdir = Make a Remote Directory\nsave = Save currenly connected server \nd = Disconnect\n");
+					string command = Console.ReadLine();
 
-            //HUGE: with EnableSsl = false, your username and password will be transmitted over the network in cleartext.
-            //Please don't transmit your username and password over the network in cleartext :)
-            mainHandler.mainRequest.EnableSsl = true;
-            //Allows mainRequest to make multiple requests. Otherwise, connection will close after one request.
-            mainHandler.mainRequest.KeepAlive = false;
-            var command = "l";
-            var request = mainHandler.LogOn();
-            var listRemote = new RemoteLS();
-
-            if (request != null)
-            {
-                Console.WriteLine("logOn successfull");
-                while (command != "LogOff")
-                {
-                    Console.WriteLine("Enter a command");
-                    command = Console.ReadLine();
-                    if (command == "ls")
-                    {
-                        listRemote.ListRemote(mainHandler);
-                    }
-                }
-                mainHandler.LogOff();
-            }
-            else
-            {
-                Console.WriteLine("logOn unsuccessfull");
-            }
-
-            //Console.WriteLine("Hello World!");
-        }
-    }
+					switch (command.ToLower())
+					{
+						case "upload":
+							Console.WriteLine("Enter the filename to put on the ftp.\n");
+							string upFile = Console.ReadLine();
+							upload.UploadToRemote(mainHandler, upFile);
+							break;
+						case "upload-m":
+							Console.WriteLine("Enter the filename to put on the ftp seperated by \";\"'s.\n");
+							string upFiles = Console.ReadLine();
+							upload.UploadMultipleToRemote(mainHandler, upFiles);
+							break;
+						case "download":
+							Console.WriteLine("Enter filename to take from the ftp.\n");
+							string downFile = Console.ReadLine();
+							download.DownloadFromRemote(mainHandler, downFile);
+							break;
+						case "delete":
+							Console.WriteLine("Enter filename to DELETE from the ftp.\n");
+							string deleteFile = Console.ReadLine();
+							delete.DeleteRemoteFile(mainHandler, deleteFile);
+							break;
+						case "ls":
+							listRemote.ListRemote(mainHandler);
+							break;
+						case "rr":
+							Console.WriteLine("Enter filename to Rename from the ftp.\n");
+							string currnetFile = Console.ReadLine();
+							Console.WriteLine("Enter the new name.\n");
+							string newFileName = Console.ReadLine();
+							rename.RenameRemoteFile(mainHandler, currnetFile, newFileName);
+							break;
+						case "d":
+							loop = false;
+							break;
+						case "mkdir":
+							Console.WriteLine("Enter directory name. \n");
+							string dir = Console.ReadLine();
+							mkDirRemote.MkDirRemote(mainHandler, dir);
+							break;
+						case "save":
+							mainHandler.SaveInfo();
+							break;
+						default:
+							Console.WriteLine("Wrong Command.\n");
+							break;
+					}
+					command = string.Empty;
+				}
+				Console.WriteLine("Press enter to disconnect");
+				Console.ReadLine();
+				mainHandler.LogOff();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+				File.WriteAllText("log.txt", ex.ToString());
+			}
+		}
+	}
 }

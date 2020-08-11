@@ -1,112 +1,161 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using ListFilesOnRemoteServer;
+using System;
 using System.Net;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
-using System.Text;
 
 namespace _410AgileCsharp
 {
-    class FtpHandler
-    {
-        public FtpWebRequest mainRequest;
-        public FtpWebResponse mainResponse;
-        public string url;
-        public string savedUserName;
-        public SecureString savedPassword;
+	class FtpHandler
+	{
+		public FtpWebRequest mainRequest;
+		public FtpWebResponse mainResponse;
+		public SecureString securePwd;
+		public string userName;
+		public string url;
+		private SavedConnectionHandler savedConnections;
 
-        public FtpWebRequest LogOn() {
-            try
-            {
-                //Allows a user to log on to an FTP server with username and password. 
-                //Prompts user for username, domain, and password
+		public bool LogOnInitial()
+		{
+			for (; ; )
+			{
+				Console.WriteLine("1) Log onto a server with url, username, and password, OR");
+				Console.WriteLine("2) Log onto a previously saved server");
+				Console.Write(": ");
+				string userInput = Console.ReadLine();
+				switch (userInput)
+				{
+					case "1":
+						return LogOnUnsaved();
+					case "2":
+						if (LogOnSaved()) { return true; }
+						else break;
+					default:
+						Console.WriteLine("Unrecognized Input");
+						break;
+				}
+			}
+		}
 
-                //Username
-                Console.Write("Enter username: ");
-                string userName = Console.ReadLine();
-                savedUserName = userName;
-                Console.WriteLine();
+		private bool LogOnUnsaved()
+		{
+			try
+			{
+				bool loggedOn = false;
+				RemoteLS listRemote = new RemoteLS();
+				while (!loggedOn)
+				{
+					//Prompt for FTP URL, and add into FtpWebRequest.
+					//Keep in mind that this needs to be a full URL, which should look something like this: ftp://HostName.com/
+					//This also initializes FtpWebRequest, which is kinda major. Maybe we should find a way to move this? 
+					//Maybe mainHandler constructor?
+					Console.Write("Enter an FTP server URL: ");
+					url = Console.ReadLine();
 
-                //Password stuff
-                //We need to use SecureStrings to be able to feed FtpWebRequest a password. It's probably much better that way!
-                SecureString securePwd = new SecureString();
-                ConsoleKeyInfo key;
-                
-                Console.Write("Enter password: ");
-                do
-                {
-                    key = Console.ReadKey(true);
+					//Allows a user to log on to an FTP server with username and password. 
+					//Prompts user for username, domain, and password
+					//Username
+					Console.Write("Enter username: ");
+					userName = Console.ReadLine();
+					Console.WriteLine();
 
-                    // Ignore any key out of range.
-                    if (((int)key.Key) >= 65 && ((int)key.Key <= 90))
-                    {
-                        // Append the character to the password.
-                        securePwd.AppendChar(key.KeyChar);
-                        Console.Write("*");
-                    }
-                    // Exit if Enter key is pressed.
-                } while (key.Key != ConsoleKey.Enter);
-                Console.WriteLine();
-                savedPassword = securePwd;
+					//Password stuff
+					//We need to use SecureStrings to be able to feed FtpWebRequest a password. It's probably much better that way!
+					securePwd = new SecureString();
+					ConsoleKeyInfo key;
+					Console.Write("Enter password: ");
+					do
+					{
+						key = Console.ReadKey(true);
 
-                //maybe we could prompt for this? I'm not sure if it matters. Can be tacked on to the end of a NetworkCredential constructor.
-                /*
-                //Domain
-                Console.Write("Enter Domain: ");
-                string domain = Console.ReadLine();
-                */
+						// Ignore any key out of range.
+						if (((int)key.Key) >= 31 && ((int)key.Key <= 122) || (int)key.Key == 189)
+						{
+							// Append the character to the password.
+							securePwd.AppendChar(key.KeyChar);
+							Console.Write("*");
+						}
+						// Exit if Enter key is pressed.
+					} while (key.Key != ConsoleKey.Enter);
+					Console.WriteLine();
 
-                //Now, we feed all of these into a NetworkCredentials class, and feed that into our FtpWebRequest
-                mainRequest.Credentials = new NetworkCredential(userName, securePwd);
+					mainRequest = (FtpWebRequest)WebRequest.Create(url);
+					//HUGE: with EnableSsl = false, your username and password will be transmitted over the network in cleartext.
+					//Please don't transmit your username and password over the network in cleartext :)
+					mainRequest.EnableSsl = true;
+					//Allows mainRequest to make multiple requests. Otherwise, connection will close after one request.
+					mainRequest.KeepAlive = true;
 
-                //Other parameters that are important to have
-                mainRequest.KeepAlive = false;
-                mainRequest.UseBinary = true;
-                mainRequest.UsePassive = true;
+					//maybe we could prompt for this? I'm not sure if it matters. Can be tacked on to the end of a NetworkCredential constructor.
+					/*
+					//Domain
+					Console.Write("Enter Domain: ");
+					string domain = Console.ReadLine();
+					*/
 
-                //List all files in directory, for testing, and to make sure we're connected
-                mainRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-                //Assign to mainResponse
-                mainResponse = (FtpWebResponse)mainRequest.GetResponse();
-                //Read the response stream
-                Stream responseStream = mainResponse.GetResponseStream();
-                StreamReader responseRead = new StreamReader(responseStream);
-                //Print
-                Console.WriteLine(responseRead.ReadToEnd());
+					//Now, we feed all of these into a NetworkCredentials class, and feed that into our FtpWebRequest
+					mainRequest.Credentials = new NetworkCredential(userName, securePwd);
 
-                //gracefully exit reader and response
-                responseRead.Close();
-                mainResponse.Close();
+					//Other parameters that are important to have
+					mainRequest.KeepAlive = true;
+					mainRequest.UseBinary = true;
+					mainRequest.UsePassive = true;
 
+					loggedOn = listRemote.ListRemote(this);
+					if (loggedOn)
+					{
+						Console.WriteLine("logOn successfull\n");
+					}
+					else
+					{
+						Console.WriteLine("Failed to log in\n");
+					}
+				}
 
-                return mainRequest;
-            }
-            catch(Exception OhNo)
-            {
-                Console.WriteLine(OhNo.Message.ToString());
-                return null;
-            }
+				return true;
+			}
+			catch (Exception OhNo)
+			{
+				Console.WriteLine(OhNo.Message.ToString());
+				return false;
+			}
+		}
 
-        }
+		private bool LogOnSaved()
+		{
+			savedConnections = new SavedConnectionHandler();
+			if (savedConnections.ReadAll())
+			{
+				return savedConnections.Connect(this);
+			}
+			else
+			{
+				return false;
+			}
+		}
 
-        public bool LogOff()
-        {
-            //Logs user off of open FTP connection
+		public void SaveInfo()
+		{
+			//saves current connection into savedConnections.
+			if (savedConnections == null) { savedConnections = new SavedConnectionHandler(); }
+			savedConnections.SaveConnection(this);
+		}
 
-            try
-            {
-                mainResponse.Close();
-                Console.WriteLine("Connection Closed!");
-                return true;
-            }
-            catch(Exception OhJeeze)
-            {
-                Console.WriteLine(OhJeeze.Message.ToString());
-                return false;
-            }
-        }
+		public bool LogOff()
+		{
+			//Logs user off of open FTP connection
 
-        
-    }
+			try
+			{
+				if (mainResponse != null) { mainResponse.Close(); }
+
+				Console.WriteLine("Connection Closed!");
+				return true;
+			}
+			catch (Exception OhJeeze)
+			{
+				Console.WriteLine(OhJeeze.Message.ToString());
+				return false;
+			}
+		}
+	}
 }
