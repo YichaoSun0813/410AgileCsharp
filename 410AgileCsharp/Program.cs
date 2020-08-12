@@ -1,4 +1,5 @@
-﻿using CreateRemoteDirectory;
+﻿using CopyRemote;
+using CreateRemoteDirectory;
 using DeleteFileFromRemoteServer;
 using DownloadFileFromRemoteServer;
 using ListFilesOnRemoteServer;
@@ -20,6 +21,7 @@ namespace _410AgileCsharp
 			Download download = new Download();
 			Rename rename = new Rename();
 			Delete delete = new Delete();
+			CopyRemoteDirectory copyDir = new CopyRemoteDirectory();
 
 			mainHandler.LogOnInitial();
 
@@ -73,6 +75,9 @@ namespace _410AgileCsharp
 							break;
 						case "save":
 							mainHandler.SaveInfo();
+							break;
+						case "copydir":
+							copyDir.Copy(mainHandler);
 							break;
 						default:
 							Console.WriteLine("Wrong Command.\n");
