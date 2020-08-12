@@ -1,7 +1,8 @@
-﻿using ListFilesOnRemoteServer;
+using ListFilesOnRemoteServer;
 using System;
 using System.Net;
 using System.Security;
+using System.Timers;
 
 namespace _410AgileCsharp
 {
@@ -14,6 +15,12 @@ namespace _410AgileCsharp
 		public string url;
 		private SavedConnectionHandler savedConnections;
 
+		private static Timer timer;
+		private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+		{
+			Console.WriteLine("Timeout！");
+			System.Environment.Exit(0);
+		}
 		public bool LogOnInitial()
 		{
 			for (; ; )
@@ -21,7 +28,15 @@ namespace _410AgileCsharp
 				Console.WriteLine("1) Log onto a server with url, username, and password, OR");
 				Console.WriteLine("2) Log onto a previously saved server");
 				Console.Write(": ");
+
+				timer = new System.Timers.Timer();
+				timer.Interval = 10000;
+				timer.Elapsed += OnTimedEvent;
+				timer.AutoReset = true;
+				timer.Enabled = true;
+
 				string userInput = Console.ReadLine();
+				timer.Enabled = false;
 				switch (userInput)
 				{
 					case "1":
@@ -49,13 +64,31 @@ namespace _410AgileCsharp
 					//This also initializes FtpWebRequest, which is kinda major. Maybe we should find a way to move this? 
 					//Maybe mainHandler constructor?
 					Console.Write("Enter an FTP server URL: ");
+
+					timer = new System.Timers.Timer();
+					timer.Interval = 10000;
+					timer.Elapsed += OnTimedEvent;
+					timer.AutoReset = true;
+					timer.Enabled = true;
+
 					url = Console.ReadLine();
+					timer.Enabled = false;
+
+
 
 					//Allows a user to log on to an FTP server with username and password. 
 					//Prompts user for username, domain, and password
 					//Username
 					Console.Write("Enter username: ");
+
+					timer = new System.Timers.Timer();
+					timer.Interval = 10000;
+					timer.Elapsed += OnTimedEvent;
+					timer.AutoReset = true;
+					timer.Enabled = true;
+
 					userName = Console.ReadLine();
+					timer.Enabled = false;
 					Console.WriteLine();
 
 					//Password stuff
@@ -159,3 +192,4 @@ namespace _410AgileCsharp
 		}
 	}
 }
+
