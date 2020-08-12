@@ -121,7 +121,7 @@ namespace _410AgileCsharp
 					key = Console.ReadKey(true);
 
 					// Ignore any key out of range.
-					if (((int)key.Key) >= 65 && ((int)key.Key <= 90))
+					if (((int)key.Key) >= 31 && ((int)key.Key <= 122) || (int)key.Key == 189)
 					{
 						// Append the character to the password.
 						toConnect.securePwd.AppendChar(key.KeyChar);
