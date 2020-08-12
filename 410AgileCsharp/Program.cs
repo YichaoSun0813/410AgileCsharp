@@ -6,11 +6,19 @@ using RenameFileFromRemoteServer;
 using System;
 using System.IO;
 using UploadFileToRemoteServer;
+using System.Timers;
 
 namespace _410AgileCsharp
 {
 	class Program
 	{
+		private static Timer timer;
+		private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+		{
+			Console.WriteLine("Timeout！");
+			System.Environment.Exit(0);
+		}
+		
 		static void Main(string[] args)
 		{
 			FtpHandler mainHandler = new FtpHandler();
@@ -29,7 +37,15 @@ namespace _410AgileCsharp
 				while (loop)
 				{
 					Console.WriteLine("\nEnter a command:\nls = List Directory Details\nupload = UpLoad File\nupload-m = Upload Multiple files\ndownload = DownLoad File\ndelete = Delete a File\nrr = Rename a Remote File\nmkdir = Make a Remote Directory\nsave = Save currenly connected server \nd = Disconnect\n");
+					
+					timer = new System.Timers.Timer();
+					timer.Interval = 10000;
+					timer.Elapsed += OnTimedEvent;
+					timer.AutoReset = true;
+					timer.Enabled = true;
+
 					string command = Console.ReadLine();
+					timer.Enabled = false;
 
 					switch (command.ToLower())
 					{
