@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace CreateRemoteDirectory
 {
-	class RemoteMkDir
+	public class RemoteMkDir
 	{
 		public FtpWebRequest ftpWebRequest;
 		public FtpWebResponse ftpWebResponse;
