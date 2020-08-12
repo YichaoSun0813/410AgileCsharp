@@ -6,7 +6,7 @@ using System.Net.Http;
 
 namespace ListFilesOnRemoteServer
 {
-	class RemoteLS
+	public class RemoteLS
 	{
 		public FtpWebRequest lsRequest;
 		public FtpWebResponse lsResponse;
