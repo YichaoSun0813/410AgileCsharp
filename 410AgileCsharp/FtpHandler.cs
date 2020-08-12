@@ -6,7 +6,7 @@ using System.Timers;
 
 namespace _410AgileCsharp
 {
-	class FtpHandler
+	public class FtpHandler
 	{
 		public FtpWebRequest mainRequest;
 		public FtpWebResponse mainResponse;
