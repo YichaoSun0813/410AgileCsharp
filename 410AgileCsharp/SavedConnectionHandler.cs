@@ -178,6 +178,7 @@ namespace _410AgileCsharp
 			sw.WriteLine(toSave.url);
 			sw.WriteLine(toSave.userName);
 			sw.Flush();
+			sw.Close();
 
 			Console.WriteLine("Connection saved!");
 
