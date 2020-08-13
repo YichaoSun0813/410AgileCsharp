@@ -14,6 +14,7 @@ namespace _410AgileCsharp
 	class SavedConnectionHandler
 	{
 		public List<SavedConnection> connectionList;
+		public SavedConnectionHandler() { }
 		public bool ReadAll()
 		{
 			connectionList = new List<SavedConnection>();
@@ -178,6 +179,7 @@ namespace _410AgileCsharp
 			sw.WriteLine(toSave.url);
 			sw.WriteLine(toSave.userName);
 			sw.Flush();
+			sw.Close();
 
 			Console.WriteLine("Connection saved!");
 
