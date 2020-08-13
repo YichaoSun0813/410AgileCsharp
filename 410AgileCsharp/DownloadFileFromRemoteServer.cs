@@ -5,7 +5,7 @@ using System.Net;
 
 namespace DownloadFileFromRemoteServer
 {
-	class Download
+	public class Download
 	{
 		public FtpWebRequest downloadRequest;
 

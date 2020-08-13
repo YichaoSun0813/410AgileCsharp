@@ -4,7 +4,7 @@ using System.Net;
 
 namespace DeleteFileFromRemoteServer
 {
-	class Delete
+	public class Delete
 	{
 		public FtpWebRequest deleteRequest;
 

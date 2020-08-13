@@ -4,7 +4,7 @@ using System.Net;
 
 namespace RenameFileFromRemoteServer
 {
-	class Rename
+	public class Rename
 	{
 		public FtpWebRequest renameRequest;
 		public FtpWebResponse renameResponse;

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace UploadFileToRemoteServer
 {
-	class Upload
+	public class Upload
 	{
 		public FtpWebRequest uploadRequest;
 
