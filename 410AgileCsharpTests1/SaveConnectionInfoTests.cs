@@ -21,12 +21,5 @@ namespace _410AgileCsharpTests1
             mainRequest.SaveInfo();
             Assert.IsTrue(File.ReadAllText("SavedConnections.txt").Contains("ftp_user"));
         }
-
-        [TestMethod()]
-        public void TestPrintInfo()
-        {
-            var mainRequest = new FtpHandler();
-            Assert.IsFalse(mainRequest.LogOnSaved());
-        }
     }
 }
