@@ -1,5 +1,6 @@
 ﻿using _410AgileCsharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Net;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,13 +8,13 @@ using System.Text;
 namespace _410AgileCsharpTests1
 {
     [TestClass()]
-    class ConnectionTest
+    public class ConnectionTest
     {
         [TestMethod()]
         public void TestLogOff()
         {
             var mainRequest = new FtpHandler();
-            Assert.IsFalse(mainRequest.LogOff());
+            Assert.IsTrue(mainRequest.LogOff());
         }
     }
 }
