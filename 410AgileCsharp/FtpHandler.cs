@@ -153,7 +153,7 @@ namespace _410AgileCsharp
 			}
 		}
 
-		private bool LogOnSaved()
+		public bool LogOnSaved()
 		{
 			savedConnections = new SavedConnectionHandler();
 			if (savedConnections.ReadAll())
@@ -192,4 +192,3 @@ namespace _410AgileCsharp
 		}
 	}
 }
-

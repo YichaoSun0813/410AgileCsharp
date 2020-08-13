@@ -14,6 +14,7 @@ namespace _410AgileCsharp
 	class SavedConnectionHandler
 	{
 		public List<SavedConnection> connectionList;
+		public SavedConnectionHandler() { }
 		public bool ReadAll()
 		{
 			connectionList = new List<SavedConnection>();
